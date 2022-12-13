@@ -1,8 +1,12 @@
 const redux = require("redux");
 const createStore = redux.createStore;
+const bindActionCreators = redux.bindActionCreators;
+const combineReducers = redux.combineReducers;
 
 const ORDERED_CAKE = "ORDERED_CAKE";
 const REFILL_CAKE = "REFILL_CAKE";
+const ORDERED_ICECREAM = "ORDERED_ICECREAM";
+const REFILL_ICECREAM = "REFILL_ICECREAM";
 
 const orderCake = (n) => {
   return {
@@ -18,11 +22,29 @@ const refillCake = (n) => {
   };
 };
 
-const initialState = {
+const orderIceCream = (n) => {
+  return {
+    type: ORDERED_ICECREAM,
+    payload: n
+  };
+};
+
+const refillIceCream = (n) => {
+  return {
+    type: REFILL_ICECREAM,
+    payload: n
+  };
+};
+
+const initialCakeState = {
   numberOfCakes: 10
 };
 
-const reducer = (prevState = initialState, action) => {
+const initialIceCreamState = {
+  numberOfIceCream: 12
+};
+
+const cakeReducer = (prevState = initialCakeState, action) => {
   switch (action.type) {
     case ORDERED_CAKE:
       return {
@@ -39,14 +61,42 @@ const reducer = (prevState = initialState, action) => {
   }
 };
 
-const store = createStore(reducer);
+const iceCreamReducer = (prevState = initialIceCreamState, action) => {
+  switch (action.type) {
+    case ORDERED_ICECREAM:
+      return {
+        ...prevState,
+        numberOfIceCream: prevState.numberOfIceCream - action.payload
+      };
+    case REFILL_ICECREAM:
+      return {
+        ...prevState,
+        numberOfIceCream: prevState.numberOfIceCream + action.payload
+      };
+    default:
+      return prevState;
+  }
+};
 
-console.log("Initial : " + store.getState().numberOfCakes);
+const rootReducer = combineReducers({
+  cake: cakeReducer,
+  iceCream: iceCreamReducer
+});
+const store = createStore(rootReducer);
+const actions = bindActionCreators(
+  { orderCake, refillCake, orderIceCream, refillIceCream },
+  store.dispatch
+);
+
+console.log("Initial : " + JSON.stringify(store.getState()));
 
 store.subscribe(() => {
-  console.log("Updated : " + store.getState().numberOfCakes);
+  console.log("Updated : " + JSON.stringify(store.getState()));
 });
 
-store.dispatch(orderCake(2));
-store.dispatch(orderCake(3));
-store.dispatch(refillCake(6));
+actions.orderCake(2);
+actions.orderCake(3);
+actions.orderIceCream(4);
+actions.refillIceCream(2);
+
+actions.refillCake(7);
