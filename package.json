@@ -4,11 +4,14 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/complex-state.js localhost 8080"
+    "start": "nodemon src/asynActions.js localhost 8080"
   },
   "dependencies": {
+    "axios": "1.2.1",
     "immer": "9.0.16",
-    "redux": "4.2.0"
+    "redux": "4.2.0",
+    "redux-logger": "3.0.6",
+    "redux-thunk": "2.4.2"
   },
   "devDependencies": {
     "nodemon": "1.18.4"
