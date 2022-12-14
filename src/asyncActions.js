@@ -9,6 +9,8 @@ const GET_USERS_REQUESTED = "GET_USERS_REQUESTED";
 const GET_USERS_SUCCEDED = "GET_USERS_SUCCEDED";
 const GET_USERS_FAILED = "GET_USERS_FAILED";
 
+const logger = reduxLogger.createLogger();
+
 const getUsersRequest = () => {
   return {
     type: GET_USERS_REQUESTED
@@ -62,7 +64,7 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-const store = createStore(reducer, applyMiddleware(thunkMiddleWare));
+const store = createStore(reducer, applyMiddleware(thunkMiddleWare, logger));
 
 const requestUsers = () => {
   return async (dispatch) => {
@@ -75,16 +77,16 @@ const requestUsers = () => {
         dispatch(getUsersSuccess(res.data.map((user) => user.id)));
       })
       .catch((error) => {
-        console.log(JSON.stringify(error));
+        // console.log(JSON.stringify(error));
         dispatch(getUsersFailed(error.message));
       });
   };
 };
 
-console.log("Initial STate : " + store.getState());
+// console.log("Initial STate : " + store.getState());
 
 store.subscribe(() => {
-  console.log("Updated state : " + JSON.stringify(store.getState()));
+  // console.log("Updated state : " + JSON.stringify(store.getState()));
 });
 
 store.dispatch(requestUsers());
